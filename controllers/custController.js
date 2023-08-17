@@ -155,6 +155,21 @@ const editCustumor = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: `An error Occured while updating the data : -> ${error}` })
     }
+
 }
 
-module.exports = { postCustomer, getCustomer, editCustumor }
+const deleteCustomer = async (req, res) => {
+    try {
+        const customerId = req.params._id;
+        const result = await custSchema.findByIdAndDelete(customerId);
+        if (result) {
+            res.status(200).json({ message: `Customer deleted successfully` })
+        } else {
+            res.status(404).json({ message: `Customer not found` })
+        }
+    } catch (error) {
+        res.status(500).json({ error: `An error occured while deleting Customer data:-> ${error}` })
+    }
+}
+
+module.exports = { postCustomer, getCustomer, editCustumor, deleteCustomer }
