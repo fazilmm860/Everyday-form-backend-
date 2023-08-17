@@ -8,24 +8,29 @@ const customerSchema = mongoose.Schema({
     },
     exeName: {
         type: String,
+        required: true
 
     },
     dseCode: {
         type: String,
+        required: true
 
     },
     cardSelect: {
         type: String,
+        required: true
 
     },
     surrogate: {
         type: String,
+        required: true
 
     },
     custName: {
 
         firstName: {
             type: String,
+            required: true
 
         },
         middleName: {
@@ -34,6 +39,7 @@ const customerSchema = mongoose.Schema({
         },
         lastName: {
             type: String,
+            required: true
 
         },
     },
@@ -41,14 +47,17 @@ const customerSchema = mongoose.Schema({
     dateOfBirth: {
 
         type: String,
+        required: true
 
     },
     gender: {
         type: String,
+        required: true
 
     },
     maritalStatus: {
         type: String,
+        required: true
 
     },
     spouseName: {
@@ -57,6 +66,7 @@ const customerSchema = mongoose.Schema({
     },
     qualification: {
         type: String,
+        required: true
 
     },
     other: {
@@ -64,6 +74,7 @@ const customerSchema = mongoose.Schema({
     },
     panNumber: {
         type: String,
+        required: true
 
     },
     mobileNumber: {
@@ -72,35 +83,43 @@ const customerSchema = mongoose.Schema({
     },
     altMobileNumber: {
         type: String,
+        required: true
 
     },
     email: {
         type: String,
+        required: true
 
     },
     residenceAddress: {
         flat: {
             type: String,
+            required: true
 
         },
         street: {
             type: String,
+            required: true
 
         },
         city: {
             type: String,
+            required: true
 
         },
         state: {
             type: String,
+            required: true
 
         },
         landMark: {
             type: String,
+            required: true
 
         },
         pincode: {
             type: String,
+            required: true
 
         },
     },
@@ -110,26 +129,32 @@ const customerSchema = mongoose.Schema({
     permanentAddress: {
         flat: {
             type: String,
+            required: true
 
         },
         street: {
             type: String,
+            required: true
 
         },
         city: {
             type: String,
+            required: true
 
         },
         state: {
             type: String,
+            required: true
 
         },
         landMark: {
             type: String,
+            required: true
 
         },
         pincode: {
             type: String,
+            required: true
 
         },
 
@@ -137,61 +162,75 @@ const customerSchema = mongoose.Schema({
     },
     periodResidence: {
         type: String,
+        required: true
 
     },
 
     residenceIs: {
         type: String,
+        required: true
 
     },
     companyName: {
         type: String,
+        required: true
 
     },
     companyAddress: {
         flat: {
             type: String,
+            required: true
 
         },
         street: {
             type: String,
+            required: true
 
         },
         city: {
             type: String,
+            required: true
 
         },
         state: {
             type: String,
+            required: true
 
         },
         landMark: {
             type: String,
+            required: true
 
         },
         pincode: {
             type: String,
+            required: true
 
         }
 
     },
     designation: {
         type: String,
+        required: true
 
     },
     telNo: {
         type: String,
+        required: true
 
     },
     officeEmail: {
         type: String,
+        required: true
 
     },
     employmentType: {
         type: String,
+        required: true
     },
     employmentDetails: {
-        type: String
+        type: String,
+        required: true
     },
     hdfcAcc: {
         type: String
