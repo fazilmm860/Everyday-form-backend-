@@ -232,6 +232,18 @@ const customerSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    aadharFrontImage: {
+        data: Buffer,
+        contentType: String,
+    },
+    aadharBackImage: {
+        data: Buffer,
+        contentType: String,
+    },
+    panCardImage: {
+        data: Buffer,
+        contentType: String,
+    },
     hdfcAcc: {
         type: String
     },

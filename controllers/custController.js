@@ -1,13 +1,32 @@
 
+const multer = require('multer');
 
 const custSchema = require('../models/customer')
+
+
 
 
 
 const postCustomer = async (req, res) => {
 
     try {
-        const imageFile = req.file
+        //Handle image upload using multer
+        const upload = multer({ storage: multer.memoryStorage() }).fields([
+            { name: 'aadharFront', maxCount: 1 },
+            { name: 'aadharBack', maxCount: 1 },
+            { name: 'panCard', maxCount: 1 },
+        ]);
+        upload(req, res, async (uploadError) => {
+            if (uploadError) {
+                return res.status(500).json({ error: `Error uploading image:${uploadError}` });
+            }
+        })
+
+        //Associate uploaded images with customer details
+        const aadharFrontImage = req.files['aadharFront'][0];
+        const aadharBackImage = req.files['aadharBack'][0];
+        const panCardImage = req.files['panCard'][0];
+
         const custdetails = new custSchema({
             date: req.body.date,
             exeName: req.body.exeName,
@@ -62,11 +81,27 @@ const postCustomer = async (req, res) => {
             officeEmail: req.body.officeEmail,
             employmentType: req.body.employmentType,
             employmentDetails: req.body.employmentDetails,
+            aadharFrontImage: {
+                data: aadharFrontImage.buffer,
+                contentType: aadharFrontImage.mimetype,
+            },
+            aadharBackImage: {
+                data: aadharBackImage.buffer,
+                contentType: aadharBackImage.mimetype,
+            },
+            panCardImage: {
+                data: panCardImage.buffer,
+                contentType: panCardImage.mimetype,
+            },
             hdfcAcc: req.body.hdfcAcc,
             otherAcc: req.body.otherAcc,
 
             remark: req.body.remark
+
+
         });
+
+
 
         await custdetails.save();
         res.status(201).json({ message: `Customer details are saved:-> ${custdetails}` });
