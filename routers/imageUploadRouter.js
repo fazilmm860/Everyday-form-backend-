@@ -10,7 +10,9 @@ router.post('/upload', upload.fields([
     { name: 'aadharFront', maxCount: 1 },
     { name: 'aadharBack', maxCount: 1 },
     { name: 'panCard', maxCount: 1 },
-    { name: 'passportSizePhoto', maxCount: 1 }
+    { name: 'passportSizePhoto', maxCount: 1 },
+    { name: 'signature', maxCount: 1 }
+
 ]), uploadImage);
 
 

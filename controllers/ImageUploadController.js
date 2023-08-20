@@ -17,17 +17,19 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const uploadImage = (req, res) => {
-    const { aadharFront, aadharBack, panCard, passportSizePhoto } = req.files;
 
-    const ImageSchema = new imageSchema({
+    const { aadharFront, aadharBack, panCard, passportSizePhoto, signature } = req.files;
+
+    const image = new imageSchema({
         aadharFront: aadharFront[0].path,
         aadharBack: aadharBack[0].path,
         panCard: panCard[0].path,
         passportSizePhoto: passportSizePhoto[0].path,
+        signature: signature[0].path,
     })
-    ImageSchema.save()
+    image.save()
         .then(() => {
-            res.status(201).json({ message: `Image uploaded successfully `, image: ImageSchema })
+            res.status(201).json({ message: `Image uploaded successfully `, Image: image })
 
         })
         .catch(error => {

@@ -16,6 +16,10 @@ const imageSchema = mongoose.Schema({
     passportSizePhoto: {
         type: String,
 
+    },
+    signature: {
+        type: String,
+
     }
 });
 const ImageSchema = mongoose.model('ImageSchema', imageSchema);
