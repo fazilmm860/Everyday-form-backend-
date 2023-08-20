@@ -7,9 +7,9 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        const extension = path.extname(file.originalname)
+        const extension = path.extname(file.originalname);
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + exetension);
+        cb(null, file.fieldname + '-' + uniqueSuffix + extension);
     },
 })
 
@@ -27,7 +27,7 @@ const uploadImage = (req, res) => {
     })
     ImageSchema.save()
         .then(() => {
-            res.status(201).json({ message: `Image uploaded successfully ${image}` })
+            res.status(201).json({ message: `Image uploaded successfully `, image: ImageSchema })
 
         })
         .catch(error => {

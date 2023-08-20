@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose')
 
 const custdata = require('./routers/customerRoute')
@@ -18,7 +18,7 @@ const DB = async () => {
 
 DB();
 app.use(express.json())
-
+app.use(bodyParser.json());
 app.use(cors())
 
 
@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 
 
 app.use('/api', custdata)
-app.use('api/image', imageUpload);
+app.use('/images', imageUpload);
 
 
 app.listen(port, () => {
