@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose')
 
 const custdata = require('./routers/customerRoute')
+const imageUpload = require('./routers/imageUploadRouter');
 
 const app = express();
 const DB = async () => {
@@ -29,6 +30,8 @@ app.use((req, res, next) => {
 
 
 app.use('/api', custdata)
+app.use('api/image', imageUpload);
+
 
 app.listen(port, () => {
     console.log(`Server connected:->${port}`);
