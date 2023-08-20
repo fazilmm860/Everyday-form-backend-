@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 
 const mongoose = require('mongoose')
-const submit = require('./routers/user')
+
 const custdata = require('./routers/customerRoute')
 
 const app = express();
@@ -27,7 +27,7 @@ app.use((req, res, next) => {
     next()
 })
 
-app.use('/api', submit)
+
 app.use('/api', custdata)
 
 app.listen(port, () => {
