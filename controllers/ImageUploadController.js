@@ -1,40 +1,53 @@
 const multer = require('multer');
 const path = require('path');
-const imageSchema = require('../models/ImageUpload');
+const ImageSchema = require('../models/ImageUpload');
+
+
+const url = 'mongodb://localhost:27017/eeryday';
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
+    destination: './uploads',
     filename: (req, file, cb) => {
-        const extension = path.extname(file.originalname);
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + extension);
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     },
-})
+});
 
 
-const upload = multer({ storage: storage });
 
-const uploadImage = (req, res) => {
+const upload = multer({ storage: storage })
 
-    const { aadharFront, aadharBack, panCard, passportSizePhoto, signature } = req.files;
+const uploadImage = async (req, res) => {
 
-    const image = new imageSchema({
-        aadharFront: aadharFront[0].path,
-        aadharBack: aadharBack[0].path,
-        panCard: panCard[0].path,
-        passportSizePhoto: passportSizePhoto[0].path,
-        signature: signature[0].path,
-    })
-    image.save()
-        .then(() => {
-            res.status(201).json({ message: `Image uploaded successfully `, Image: image })
+    try {
+        const files = req.files;
 
-        })
-        .catch(error => {
-            res.status(500).json({ error: 'Image upload failed', error });
-        })
+        // Create a new document in MongoDB for each uploaded file
+        for (const fieldName in files) {
+            const file = files[fieldName][0];
+            const image = new ImageSchema({
+                filename: file.fieldName,
+                filepath: file.path,
+                field: fieldName,
+            });
+            await image.save();
+        }
+
+        res.status(201).send('Images uploaded successfully');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
 };
 
-module.exports = { uploadImage }
+const getImage = async (req, res) => {
+    try {
+        const images = await ImageSchema.find();
+        res.json(images);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+
+};
+
+module.exports = { uploadImage, getImage }

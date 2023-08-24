@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { uploadImage } = require('../controllers/ImageUploadController');
+const { uploadImage, getImage } = require('../controllers/ImageUploadController');
 
 const multer = require('multer');
 const storage = multer.memoryStorage(); // Store files in memory for processing
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 router.post('/upload', upload.fields([
     { name: 'aadharFront', maxCount: 1 },
@@ -15,5 +15,6 @@ router.post('/upload', upload.fields([
 
 ]), uploadImage);
 
+router.get('/getImage', getImage);
 
 module.exports = router;
