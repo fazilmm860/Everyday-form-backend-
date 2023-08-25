@@ -1,27 +1,47 @@
-// controllers/feedbackController.js
+const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const passwordComplexity = require('joi-password-complexity');
 
-const Feedback = require('../models/user');
 
-exports.submitFeedback = async (req, res) => {
-    try {
-        const { name, email, option, comments, conditionMet, conditionalField } = req.body;
+const userSchema = mongoose.Schema({
+    firstName: {
+        type: String,
+        required: true,
 
-        const newFeedback = new Feedback({
-            name,
-            email,
-            option,
-            comments,
-            conditionMet,
-            conditionalField
-        });
-
-        await newFeedback.save();
-
-        res.status(201).json({ message: 'Feedback submitted successfully' });
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'An error occurred while submitting feedback' });
-
+    },
+    lastName: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    cpassword: {
+        type: String,
+        required: true
     }
-};
+})
+
+userSchema.methods.generateAuthToken = function () {
+    const token = jwt.sign({ _id: this._id }, process.env.JWTPRIVATEKEY, { expiresIn: "7d" })
+    return token
+}
+
+const User = mongoose.model("user", userSchema)
+
+const validate = (data) => {
+    const schema = Joi.object({
+        firstName: Joi.string().required().label("First Name"),
+        lastName: Joi.string().required().label("Last Name"),
+        email: Joi.string().email().required().label("Email"),
+        password: passwordComplexity().required().label("Password")
+    });
+    return schema.validate(data)
+}
+
+module.exports = { User, validate }
