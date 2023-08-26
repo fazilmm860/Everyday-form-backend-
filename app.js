@@ -1,13 +1,17 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv')
 
 const mongoose = require('mongoose')
 
 const custdata = require('./routers/customerRoute')
 const imageUpload = require('./routers/imageUploadRouter');
+const userRoutes = require('./routers/user');
+const authRoutes = require('./routers/auth');
 
 const app = express();
+dotenv.config()
 const DB = async () => {
     try {
         mongoose.connect('mongodb://localhost:27017/eeryday', {
@@ -43,6 +47,8 @@ app.use((req, res, next) => {
 
 app.use('/api', custdata)
 app.use('/images', imageUpload);
+// app.use('/api/users', userRoutes);
+// app.use('/api/auth', authRoutes)
 
 
 app.listen(port, () => {

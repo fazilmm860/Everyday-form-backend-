@@ -1,47 +1,81 @@
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const passwordComplexity = require('joi-password-complexity');
+const mongoose = require("mongoose");
+const validator = require("validator");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
+const keysecret = process.env.SECRET_KEY
 
-const userSchema = mongoose.Schema({
-    firstName: {
+const userSchema = new mongoose.Schema({
+    fname: {
         type: String,
         required: true,
-
-    },
-    lastName: {
-        type: String,
-        required: true
+        trim: true
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
+        validate(value) {
+            if (!validator.isEmail(value)) {
+                throw new Error("not a valid Email")
+            }
+        }
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        minlength: 6
     },
     cpassword: {
         type: String,
-        required: true
+        required: true,
+        minlength: 6
+    },
+    tokens: [
+        {
+            token: {
+                type: String,
+                required: true,
+            }
+        }
+    ]
+
+});
+
+
+//hash Password
+
+
+userSchema.pre("save", async function (next) {
+
+    if (this.isModified("password")) {
+        this.password = await bcrypt.hash(this.password, 12);
+        this.cpassword = await bcrypt.hash(this.cpassword, 12);
+
+
     }
-})
+    next()
+});
 
-userSchema.methods.generateAuthToken = function () {
-    const token = jwt.sign({ _id: this._id }, process.env.JWTPRIVATEKEY, { expiresIn: "7d" })
-    return token
+//token generate
+
+userSchema.methods.generateAuthtoken = async function () {
+    try {
+        let token23 = jwt.sign({ _id: this._id }, keysecret, {
+            expiresIn: "1d"
+        });
+        this.tokens = this.tokens.concat({ token: token23 })
+        await this.save();
+        return token23;
+    }
+    catch (error) {
+        res.status(422).json(error)
+
+    }
+
 }
 
-const User = mongoose.model("user", userSchema)
+//creating model
+const userdb = new mongoose.model("users", userSchema)
 
-const validate = (data) => {
-    const schema = Joi.object({
-        firstName: Joi.string().required().label("First Name"),
-        lastName: Joi.string().required().label("Last Name"),
-        email: Joi.string().email().required().label("Email"),
-        password: passwordComplexity().required().label("Password")
-    });
-    return schema.validate(data)
-}
-
-module.exports = { User, validate }
+module.exports = userdb;
