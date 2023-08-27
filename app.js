@@ -10,6 +10,8 @@ const imageUpload = require('./routers/imageUploadRouter');
 const userRoutes = require('./routers/user');
 const authRoutes = require('./routers/auth');
 
+const loginRouter = require('./routers/user')
+
 const app = express();
 dotenv.config()
 const DB = async () => {
@@ -49,7 +51,7 @@ app.use('/api', custdata)
 app.use('/images', imageUpload);
 // app.use('/api/users', userRoutes);
 // app.use('/api/auth', authRoutes)
-
+app.use('/api', loginRouter);
 
 app.listen(port, () => {
     console.log(`Server connected:->${port}`);

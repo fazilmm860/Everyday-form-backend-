@@ -161,3 +161,5 @@ router.post("/sendpasswordlink", async (req, res) => {
         res.status(401).json({ status: 401, message: "Invalid user" });
     }
 })
+
+module.exports = router;
