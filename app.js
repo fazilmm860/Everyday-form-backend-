@@ -1,8 +1,9 @@
+require("dotenv").config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const dotenv = require('dotenv')
 
+const cookiParser = require("cookie-parser")
 const mongoose = require('mongoose')
 
 const custdata = require('./routers/customerRoute')
@@ -13,7 +14,7 @@ const authRoutes = require('./routers/auth');
 const loginRouter = require('./routers/user')
 
 const app = express();
-dotenv.config()
+
 const DB = async () => {
     try {
         mongoose.connect('mongodb://localhost:27017/eeryday', {
@@ -36,11 +37,11 @@ const DB = async () => {
 DB();
 app.use(express.json())
 
-
+app.use(cookiParser());
 app.use(cors())
 
 
-const port = 5000
+const port = process.env.PORT
 app.use((req, res, next) => {
     console.log(req.path, req.method);
     next()
@@ -49,8 +50,6 @@ app.use((req, res, next) => {
 
 app.use('/api', custdata)
 app.use('/images', imageUpload);
-// app.use('/api/users', userRoutes);
-// app.use('/api/auth', authRoutes)
 app.use('/api', loginRouter);
 
 app.listen(port, () => {

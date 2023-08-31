@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const userdb = require('../models/user');
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
 const authenticate = require("../middleware/authenticate");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
@@ -11,7 +11,10 @@ const keysecret = process.env.SECRET_KEY
 
 //email config 
 const transporter = nodemailer.createTransport({
-    service: "gamil",
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    service: "gmail",
     auth: {
         user: process.env.EMAIL,
         pass: process.env.PASSWORD
@@ -24,15 +27,15 @@ const transporter = nodemailer.createTransport({
 router.post('/register', async (req, res) => {
     const { fname, email, password, cpassword } = req.body
 
-    if (!fname || !email || !password || cpassword) {
-        res.status(422).json({ error: "fill all the details" })
+    if (!fname || !email || !password || !cpassword) {
+        return res.status(422).json({ error: "fill all the details" })
     }
     try {
         const preuser = await userdb.findOne({ email: email })
         if (preuser) {
-            res.status(422).json({ error: "This Email Already register" })
+            return res.status(422).json({ error: "This Email Already register" })
         } else if (password !== cpassword) {
-            res.status(422).json({ error: "Password and Confirm Password not Match" })
+            return res.status(422).json({ error: "Password and Confirm Password not Match" })
 
         } else {
             const finalUser = new userdb({
@@ -41,11 +44,11 @@ router.post('/register', async (req, res) => {
             //here password hashing
             const storeData = await finalUser.save();
 
-            res.status(201).json({ status: 201, storeData })
+            return res.status(201).json({ status: 201, storeData })
         }
 
     } catch (error) {
-        res.status(422).json(error)
+        return res.status(422).json(error)
         console.log("catch block error");
 
 
@@ -66,14 +69,14 @@ router.post("/login", async (req, res) => {
         if (userValid) {
             const isMatch = await bcrypt.compare(password, userValid.password)
             if (!isMatch) {
-                res.status(422).json({ error: "Invalid User" })
+                return res.status(422).json({ error: "Invalid User" })
             } else {
 
                 //togen genrate
                 const token = await userValid.generateAuthtoken();
 
                 //cookiegenerate
-                res.cookie("usercookie", token, {
+                return res.cookie("usercookie", token, {
                     expires: new Date(Date.now() + 9000000),
                     httpOnly: true
                 });
@@ -81,12 +84,12 @@ router.post("/login", async (req, res) => {
                     userValid,
                     token
                 }
-                res.status(201).json({ status: 201, result })
+                return res.status(201).json({ status: 201, result })
             }
         }
 
     } catch (error) {
-        res.status(401).json(error);
+        return res.status(401).json(error);
         console.log("catch block");
     }
 })
@@ -95,9 +98,9 @@ router.post("/login", async (req, res) => {
 router.get("/valiuser", authenticate, async (req, res) => {
     try {
         const validUserOne = await userdb.findOne({ _id: req.userId });
-        res.status(201).json({ status: 201, validUserOne });
+        return res.status(201).json({ status: 201, validUserOne });
     } catch (error) {
-        res.status(401).json({ status: 401, error });
+        return res.status(401).json({ status: 401, error });
 
     }
 });
@@ -108,14 +111,16 @@ router.get("/logout", authenticate, async (req, res) => {
         req.rootUser.tokens = req.rootUser.tokens.filter((curelem) => {
             return curelem.token !== req.token
         })
+        await req.rootUser.save();
+
         res.clearCookie("usercookie", { path: "/" });
 
-        req.rootUser.save();
 
-        res.status(201).json({ status: 201 })
+
+        return res.status(201).json({ status: 201 })
     }
     catch (error) {
-        res.status(201).json({ status: 401, error })
+        return res.status(201).json({ status: 401, error })
     }
 })
 
@@ -126,7 +131,7 @@ router.post("/sendpasswordlink", async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
-        res.status(401).json({ status: 401, message: "Enter Your Email" })
+        return res.status(401).json({ status: 401, message: "Enter Your Email" })
 
     }
     try {
@@ -144,21 +149,89 @@ router.post("/sendpasswordlink", async (req, res) => {
                 from: process.env.EMAIL,
                 to: email,
                 subject: "Sending Email For Password Reset",
-                text: `This Link Valid For 5 MINUTES/forgotpassword/${userfind.id}/${setusertoken.verifytoken}`
+                text: `This Link Valid For 5 MINUTES http://localhost:3000/forgotpassword/${userfind.id}/${setusertoken.verifytoken}`
             }
-            transporte.sendMail(mailOptions, (error, info) => {
+            transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     console.log('error:->', error);
-                    res.status(401).json({ status: 401, message: "email not send" })
+                    return res
+                        .status(401)
+                        .json({ status: 401, message: "email not send" })
                 } else {
-                    console.log("Email sent", info.resonse);
-                    res.status(201).json({ status: 201, message: "Email Sent Successfully" })
+                    console.log("Email sent", info.response);
+                    return res
+                        .status(201)
+                        .json({ status: 201, message: "Email Sent Successfully" })
                 }
             })
         }
     }
     catch (error) {
-        res.status(401).json({ status: 401, message: "Invalid user" });
+        return res.status(401).json({ status: 401, message: "Invalid user" });
+    }
+});
+
+//verify user for forgot password time
+
+router.get('/forgotpassword/:id/:token', async (req, res) => {
+    const { id, token } = req.params;
+
+    try {
+        const validuser = await userdb.findOne({ _id: id, verifytoken: token });
+
+        const verifyToken = jwt.verify(token, keysecret);
+
+        console.log(verifyToken);
+
+        if (validuser && verifyToken._id) {
+            return res
+                .status(201)
+                .json({ status: 201, validuser })
+        } else {
+            return res
+                .status(401)
+                .json({ status: 401, message: "user not exist" })
+        }
+    }
+    catch (error) {
+        return res
+            .status(401)
+            .json({ status: 401, error })
+    }
+});
+
+// change password
+
+router.post("/:id/:token", async (req, res) => {
+    const { id, token } = req.params;
+
+    const { password } = req.body;
+
+    try {
+        const validuser = await userdb.findOne({ _id: id, verifytoken: token });
+
+        const verifyToken = jwt.verify(token, keysecret);
+
+        if (validuser && verifyToken._id) {
+            const newpassword = await bcrypt.hash(password, 12);
+
+            const setnewuserpass = await userdb.findByIdAndUpdate({ _id: id }, { password: newpassword })
+
+            setnewuserpass.save();
+            return res
+                .status(201)
+                .json({ status: 201, setnewuserpass })
+        } else {
+
+            return res
+                .status(401)
+                .json({ status: 401, message: "user not exist" })
+        }
+    }
+    catch (error) {
+        return res
+            .status(401)
+            .json({ status: 401, error })
     }
 })
 
