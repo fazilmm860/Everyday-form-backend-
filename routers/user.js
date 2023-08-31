@@ -76,7 +76,7 @@ router.post("/login", async (req, res) => {
                 const token = await userValid.generateAuthtoken();
 
                 //cookiegenerate
-                return res.cookie("usercookie", token, {
+                res.cookie("usercookie", token, {
                     expires: new Date(Date.now() + 9000000),
                     httpOnly: true
                 });
@@ -84,12 +84,14 @@ router.post("/login", async (req, res) => {
                     userValid,
                     token
                 }
-                return res.status(201).json({ status: 201, result })
+                res.status(201).json({ status: 201, result })
             }
+        } else {
+            res.status(401).json({ status: 401, message: "Invalid details" });
         }
 
     } catch (error) {
-        return res.status(401).json(error);
+        res.status(401).json(error);
         console.log("catch block");
     }
 })
