@@ -100,6 +100,25 @@ const getCustomer = async (req, res) => {
     }
 }
 
+const getCustomerDetails = async (req, res) => {
+    try {
+        const itemId = req.params._id;
+        const item = await custSchema.findById(itemId);
+
+        if (!item) {
+            return res
+                .status(404)
+                .json({ message: `Item Not Found` });
+        }
+        res.status(200).json({ item });
+
+
+    } catch (error) {
+        console.error(`Error in fetching item details:${error}`);
+        res.status(500).json({ message: `Internal server error` });
+    }
+}
+
 const editCustumor = async (req, res) => {
     try {
         const customerId = req.params._id;
@@ -130,4 +149,4 @@ const deleteCustomer = async (req, res) => {
     }
 }
 
-module.exports = { postCustomer, getCustomer, editCustumor, deleteCustomer }
+module.exports = { postCustomer, getCustomer, editCustumor, deleteCustomer, getCustomerDetails }
