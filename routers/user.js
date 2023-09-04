@@ -172,7 +172,30 @@ router.post("/sendpasswordlink", async (req, res) => {
         return res.status(401).json({ status: 401, message: "Invalid user" });
     }
 });
+//Send Registration link
+router.post("/registerationlink", async (req, res) => {
+    const { email } = req.body;
 
+    //Create email data
+    const mailOptions = {
+        from: process.env.Email,
+        to: email,
+        subject: 'Your Registration Link from EveyDay Finance Solution to access admin page',
+        text: `Use this link to Registration: http://localhost:3000/register please dont share this link`
+
+    }
+    try {
+        //Send the email
+        await transporter.sendMail(mailOptions);
+        console.log('Resigtration email sent Successfully');
+        res.status(200).json({ message: 'Registration Link sent success fully' })
+
+    } catch (error) {
+        console.error(`Error sending registration email:${error}`);
+        res.status(500).json(error)
+    }
+
+})
 //verify user for forgot password time
 
 router.get('/forgotpassword/:id/:token', async (req, res) => {
