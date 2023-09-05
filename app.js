@@ -38,10 +38,11 @@ DB();
 app.use(express.json())
 
 app.use(cookiParser());
-const corsOptions = {
-    origin: 'https://everyday-finance-solution-crm-frontend-h0iz.onrender.com/', // Replace with your frontend URL
-};
-app.use(cors(corsOptions))
+app.use(cors({
+    origin: 'https://everyday-finance-solution-crm-frontend-h0iz.onrender.com',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Enable cookies and other credentials
+}));
 
 
 const port = process.env.PORT
