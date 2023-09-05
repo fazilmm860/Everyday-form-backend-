@@ -38,7 +38,10 @@ DB();
 app.use(express.json())
 
 app.use(cookiParser());
-app.use(cors())
+const corsOptions = {
+    origin: '', // Replace with your frontend URL
+};
+app.use(cors(corsOptions))
 
 
 const port = process.env.PORT
