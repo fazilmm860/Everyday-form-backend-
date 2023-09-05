@@ -41,8 +41,9 @@ app.use(cookiParser());
 app.use(cors({
     origin: 'https://everyday-finance-solution-crm-frontend-h0iz.onrender.com',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true, // Enable cookies and other credentials
+    // Enable cookies and other credentials
 }));
+
 
 
 const port = process.env.PORT
