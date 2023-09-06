@@ -39,7 +39,7 @@ app.use(express.json())
 
 app.use(cookiParser());
 app.use(cors({
-    origin: 'https://crm-of-everyday-finance-solution.onrender.com',
+    origin: 'https://everyday-finance-crm-frontend-web.onrender.com',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     // Enable cookies and other credentials
 }));
