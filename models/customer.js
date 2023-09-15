@@ -6,6 +6,11 @@ const customerSchema = mongoose.Schema({
         type: String,
 
     },
+    applicationId:{
+        type:String,
+        unique:true,
+        required:true,
+    },
     exeName: {
         type: String,
         required: true

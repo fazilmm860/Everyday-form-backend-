@@ -7,7 +7,6 @@ const cookiParser = require("cookie-parser")
 const mongoose = require('mongoose')
 
 const custdata = require('./routers/customerRoute')
-const imageUpload = require('./routers/imageUploadRouter');
 const userRoutes = require('./routers/user');
 const authRoutes = require('./routers/auth');
 
@@ -59,4 +58,4 @@ app.use('/api', loginRouter);
 
 app.listen(port, () => {
     console.log(`Server connected:->${port}`);
-})
+})   

@@ -1,6 +1,5 @@
 
 
-
 const custSchema = require('../models/customer')
 
 
