@@ -55,7 +55,6 @@ app.use((req, res, next) => {
 
 
 app.use('/api', custdata)
-app.use('/images', imageUpload);
 app.use('/api', loginRouter);
 
 app.listen(port, () => {
