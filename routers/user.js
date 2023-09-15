@@ -151,7 +151,7 @@ router.post("/sendpasswordlink", async (req, res) => {
                 from: process.env.EMAIL,
                 to: email,
                 subject: "Sending Email For Password Reset",
-                text: `This Link Valid For 5 MINUTES https://everyday-finance-crm-frontend-web.onrender.com/forgotpassword/${userfind.id}/${setusertoken.verifytoken}`
+                text: `This Link Valid For 5 MINUTES http://localhost:3000/forgotpassword/${userfind.id}/${setusertoken.verifytoken}`
             }
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
@@ -181,7 +181,7 @@ router.post("/registerationlink", async (req, res) => {
         from: process.env.Email,
         to: email,
         subject: 'Your Registration Link from EveyDay Finance Solution to access admin page',
-        text: `Use this link to Registration: https://everyday-finance-crm-frontend-web.onrender.com/register please dont share this link`
+        text: `Use this link to Registration: http://localhost:3000/register please dont share this link`
 
     }
     try {
