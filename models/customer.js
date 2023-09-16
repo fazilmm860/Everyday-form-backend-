@@ -6,7 +6,7 @@ const customerSchema = mongoose.Schema({
         type: String,
 
     },
-    applicationId:{
+    applicationNumber:{
         type:String,
         unique:true,
         required:true,
