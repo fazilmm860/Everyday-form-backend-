@@ -1,20 +1,18 @@
 
-
-const Counter = require('../models/counter');
 const custSchema = require('../models/customer')
 
 
 
 
-
+let counter = 0;
 const postCustomer = async (req, res) => {
 
     try {
-        //Get the current counter value
-        const counter=await Counter.findOneAndUpdate({},{$inc:{value:1}},{new:true, upsert:true});
+     
+        counter++; // Increment the counter
 
-        //Generate the application number
-        const applicationNumber=`CRDM${counter.value.toString().padStart(5,'0')}`;
+        const applicationNumber = `CRDM${counter.toString().padStart(3, '0')}`;
+
 
         const custdetails = new custSchema({
             date: req.body.date,
@@ -83,7 +81,7 @@ const postCustomer = async (req, res) => {
 
 
         await custdetails.save();
-        res.status(201).json({ message: `Customer details are saved:-> ${custdetails}` });
+        res.status(201).json({ applicationNumber: applicationNumber });
     } catch (error) {
         res.status(500).json({ error: `An error occurred while submitting data:-> ${error}` });
 

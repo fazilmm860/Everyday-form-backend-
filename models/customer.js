@@ -221,12 +221,12 @@ const customerSchema = mongoose.Schema({
     },
     telNo: {
         type: String,
-        required: true
+        
 
     },
     officeEmail: {
         type: String,
-        required: true
+     
 
     },
     employmentType: {
